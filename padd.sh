@@ -328,7 +328,7 @@ GetNetworkInformation() {
     # if the DHCP Router variable isn't set
     # Issue 3: https://github.com/jpmck/PADD/issues/3
     if [ -z ${DHCP_ROUTER+x} ]; then
-      DHCP_ROUTER=$(/sbin/ip route | awk '/default/ { print $3 }')
+      DHCP_ROUTER=$(/sbin/ip route | awk '/default/ { printf "%s\t",$3 }')
     fi
 
     dhcp_info=" Router:   ${DHCP_ROUTER}"
@@ -490,7 +490,7 @@ GetVersionInformation() {
     fi
 
     # PADD version information...
-    padd_version_latest=$(curl -sI https://github.com/SpasilliumNexus/PADD/releases/latest | awk -F '/' '/location/ {print $NF}' | tr -d '\r\n[:alpha:]')
+    padd_version_latest=$(curl -sI https://github.com/SpasilliumNexus/PADD/releases/latest | grep -i 'Location' | awk -F '/' '{print $NF}' | tr -d '\r\n[:alpha:]')
 
     # is PADD up-to-date?
     if [[ "${padd_version}" != "${padd_version_latest}" ]]; then
@@ -567,7 +567,7 @@ ceol=$(tput el)
 
 # wrapper - echo with a clear eol afterwards to wipe any artifacts remaining from last print
 CleanEcho() {
-  echo -e $1 "${ceol}"
+  echo -e "${ceol}$1"
 }
 
 # wrapper - printf
